@@ -9,17 +9,23 @@ const app = Vue.createApp({
         playerHealth:100,           //rzeczywiste dane
         monsterHealth:100,
         licznikRund:0,
-        winner:null
+        winner:null,
+        logMessages:[]
 
         };
   
     },
     computed:{
         monsterBarStyles(){
-            return{
-                width:this.monsterHealth +'%'}  
+            if(this.monsterHealth<0){
+            return { width:'0%'}
+            }  
+            return{width:this.monsterHealth + '%'}
         },
         playerBarStyles(){
+            if (this.playerHealth < 0){
+                return {width:'0%'}
+            }
             return{
                 width:this.playerHealth +'%'}
             },
@@ -47,23 +53,45 @@ else if (value<=0){
         }
     },
     methods:{   //akcje działania przycisków
+
+        addLogMessages(who,what,value){
+            this.logMessages.unshift({
+                actionBy:who,
+                actionType:what,
+                actionValue:value
+            })
+
+        },
+        surrender(){
+            this.winner = 'monster'
+        },
+        nowaGra(){//aby zacząć nową grę restartuję liczniki
+            this.playerHealth = 100
+            this.monsterHealth = 100
+            this.licznikRund = 0
+            this.winner = null
+            this.logMessage = []
+        },
         attackMonster (){
             this.licznikRund++;
         const attactValue = getRandomValue(12,5)
               this.monsterHealth = this.monsterHealth-attactValue;
               this.attackPlayer();
+              this.logMessages('player','attact', attactValue)
               
 
     },
     attackPlayer(){
         const attactValue = getRandomValue(10,2)
         this.playerHealth -= attactValue
+        this.logMessages('monster','attact', attactValue)
     },
     specialAttack(){
         this.licznikRund++;
         const attactValue = getRandomValue(10,25) //chcę ustawić żeby special działał co 3 rundy
         this.monsterHealth -= attactValue;
         this.attackPlayer()
+        this.logMessages('player','attact', attactValue)
     },
     
     healPlayer(){
@@ -74,7 +102,8 @@ this.playerHealth = 100
 }else{
 this.playerHealth += healValue
     }
-    this.playerHealth()
+    this.logMessages('player','heal', healValue)
+    this.attackPlayer();
 },
 },
 });

@@ -31,18 +31,23 @@
       </section>
       <section class="container" v-if="winner"></section>
       <h2 >Game Over</h2>
-      <h3 v-if ="winner === 'monster'">You lost</h3>
-      <h3 v-else-if="winner === 'player'">You won</h3>
-      <h3 v-else-if>Draw</h3>
+      <h3 v-if ="winner === 'monster'"> You lost </h3>
+      <h3 v-else-if="winner === 'player'"> You won </h3>
+      <h3 v-else> Draw </h3>
+      <button @click="nowaGra">START NEW GAME</button>
       <section id="controls">
         <button @click="attackMonster">ATTACK</button>
         <button :disabled="specjalnyAtak" @click="specialAttack">SPECIAL ATTACK</button>
         <button @click="healPlayer">HEAL</button>
-        <button>SURRENDER</button>
+        <button @click="surrender">SURRENDER</button>
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li v-for="logMessage in logMessages">
+            
+          </li>
+        </ul>
       </section>
     </div>
   </body>
