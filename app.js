@@ -3,15 +3,13 @@ function getRandomValue(min,max){
 
 }
 
-
-
-
 const app = Vue.createApp({
     data(){
         return{     //w danych zawsze musi zwrócic obiekt, który przechowuje nasze 
         playerHealth:100,           //rzeczywiste dane
         monsterHealth:100,
-        licznikRund:0
+        licznikRund:0,
+        winner:null
 
         };
   
@@ -29,6 +27,24 @@ const app = Vue.createApp({
                 return this.licznikRund % 3 !==0;
                 
             }
+    },
+    watch:{
+        playerHealth(value){
+if(value<=0 && this.monsterHealth <=0){
+    this.winner='draw'}
+//draw 
+
+else if (value <=0)//przebrana gracza
+{this.winner='monster'}
+        },
+        monsterHealth(value){
+if(value <=0 && this.playerHealth<=0){
+    this.winner='draw'
+}
+else if (value<=0){
+    this.winner='player'
+}
+        }
     },
     methods:{   //akcje działania przycisków
         attackMonster (){
@@ -48,9 +64,19 @@ const app = Vue.createApp({
         const attactValue = getRandomValue(10,25) //chcę ustawić żeby special działał co 3 rundy
         this.monsterHealth -= attactValue;
         this.attackPlayer()
-    }
     },
     
+    healPlayer(){
+        this.licznikRund++;     
+const healValue = getRandomValue(8,20)
+if(this.playerHealth + healValue >100){//100 to jest max więc nie możemy wyleczyć się na więcej
+this.playerHealth = 100
+}else{
+this.playerHealth += healValue
+    }
+    this.playerHealth()
+},
+},
 });
 
 app.mount('#game');
